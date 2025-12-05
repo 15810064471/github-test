@@ -25,12 +25,12 @@ steps:
  
   - script: | #拉取最新代码到本地
       cd github-test
-      git pull github main --rebase
+      git pull github master --rebase
       git pull azure main --rebase
       
     displayName:  'merge remote updates'
 
   - script: | #push azure
       cd github-test
-      git push azure main:main
+      git push azure main:master
     displayName: 'push to azure main'
