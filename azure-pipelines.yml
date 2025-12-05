@@ -1,0 +1,36 @@
+trigger:
+  - main  
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  AZURE_REPO_URL: 'https://nocross:$(AZURE_PAT)@dev.azure.com/nocross/NNTEST/_git/NNTEST2'
+  AZURE_BRANCH: 'main'
+  GITHUB_REPO_URL: 'https://15810064471:$(GITHUB_PAT)@github.com/15810064471/github-test.git'
+  GITHUB_BRANCH: 'main'
+
+steps:  
+  - script: | #拉取GITHUB仓库
+      git clone $(GITHUB_REPO_URL)
+    displayName: 'pull github'
+
+  - script: | #关联仓库
+      cd github-test
+      git remote add github $(GITHUB_REPO_URL)
+      git remote add azure $(AZURE_REPO_URL)
+      git config --global user.name "zedong"
+      git config --global user.email "zedong@biomap.com"
+    displayName: 'remote repo'
+ 
+  - script: | #拉取最新代码到本地
+      cd github-test
+      git pull github main --rebase
+      git pull azure main --rebase
+      
+    displayName:  'merge remote updates'
+
+  - script: | #push azure
+      cd github-test
+      git push azure main:main
+    displayName: 'push to azure main'
